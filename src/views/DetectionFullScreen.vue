@@ -37,6 +37,8 @@ export default {
   },
   data () {
     return {
+      language: this.$route.params.language,
+      detectionModel: this.$route.params.detectionModel,
       myYolo: {}
     }
   },
@@ -56,7 +58,37 @@ export default {
     },
     async loadModel (modelName) {
       console.log(`Loading detection model: ${modelName}`)
-      this.myYolo = await yolo.coco_tiny_v2()
+      switch (modelName) {
+        case 'UEC100 english':
+          this.myYolo = await yolo.uec100_tiny_v2()
+          break
+        case 'UEC100 chinese':
+          this.myYolo = await yolo.uec100_tiny_v2_chinese()
+          break
+        case 'UEC100 japanese':
+          this.myYolo = await yolo.uec100_tiny_v2_japanese()
+          break
+        case 'coco english':
+          this.myYolo = await yolo.coco_tiny_v2()
+          break
+        case 'coco chinese':
+          this.myYolo = await yolo.coco_tiny_v2_chinese()
+          break
+        case 'coco japanese':
+          this.myYolo = await yolo.coco_tiny_v2_japanese()
+          break
+        case 'voc english':
+          this.myYolo = await yolo.voc_tiny_v1()
+          break
+        case 'voc chinese':
+          this.myYolo = await yolo.voc_tiny_v1_chinese()
+          break
+        case 'voc japanese':
+          this.myYolo = await yolo.voc_tiny_v1_japanese()
+          break
+        default:
+          console.log('List switch error')
+      }
       console.log('Model loaded')
     },
     async run () {
@@ -128,8 +160,8 @@ export default {
   mounted: function () {
     window.addEventListener('load', async () => {
       await this.setupWebCam()
-      // await this.loadModel('v1')
-      // this.run()
+      await this.loadModel(this.detectionModel + ' ' + this.language)
+      this.run()
     })
   }
 }

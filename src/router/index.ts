@@ -24,7 +24,7 @@ const routes = [
     component: () => import('../views/AddModel.vue')
   },
   {
-    path: '/detectionFullScreen',
+    path: '/detectionFullScreen/:detectionModel/:language',
     name: 'detectionFullScreen',
     component: () => import('../views/DetectionFullScreen.vue')
   },

@@ -13,7 +13,7 @@
         <ion-list>
             <ion-item>
               <ion-label>請選擇要使用的模型</ion-label>
-              <ion-select value="voc" okText="Okay" cancelText="Dismiss" placeholder="基礎物件I">
+              <ion-select value="voc" @ionChange="changeDetectionModel($event.target.value)" okText="Okay" cancelText="Dismiss" placeholder="基礎物件I">
                   <ion-select-option value="voc">基礎物件I</ion-select-option>
                   <ion-select-option value="coco">基礎物件II</ion-select-option>
                   <ion-select-option value="UEC100">日式料理</ion-select-option>
@@ -23,7 +23,7 @@
         <ion-list>
             <ion-item>
             <ion-label>請選擇偵測顯示的語言</ion-label>
-            <ion-select value="english" okText="Okay" cancelText="Dismiss" placeholder="中文">
+            <ion-select value="english" @ionChange="changeLanguage($event.target.value)" okText="Okay" cancelText="Dismiss" placeholder="中文">
                 <ion-select-option value="english">English</ion-select-option>
                 <ion-select-option value="chinese">中文</ion-select-option>
                 <ion-select-option value="japanese">Japanese</ion-select-option>
@@ -32,7 +32,9 @@
         </ion-list>
       </ion-grid>
 
-      <ion-button color="primary" expand="full" fill="outline" size="large" href="detectionFullScreen">開始偵測</ion-button>
+      <router-link :to="'/detectionFullScreen/' + modelName + '/' + language">
+      <ion-button color="primary" expand="full" fill="outline" size="large">開始偵測</ion-button>
+      </router-link>
 
       <ion-card>
         <ion-card-content>
@@ -67,6 +69,22 @@ export default {
   name: 'home',
   components: {
     Tabs
+  },
+  data () {
+    return {
+      modelName: 'voc',
+      language: 'english'
+    }
+  },
+  methods: {
+    changeDetectionModel (modelName) {
+      console.log(`Change detection model to ${modelName}`)
+      this.modelName = modelName
+    },
+    changeLanguage (language) {
+      console.log(`Change detection language to ${language}`)
+      this.language = language
+    }
   }
 }
 </script>
