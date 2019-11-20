@@ -7,10 +7,16 @@
         </ion-header>
 
         <ion-content class="ion-padding">
-            <Tabs />
             <p>這是一款爲旅行者設計偵測食物的應用程式。</p>
             <p>開發人員： 鄭聖玄、金鑒修</p>
         </ion-content>
+
+        <ion-footer>
+            <ion-toolbar>
+                <Tabs />
+            </ion-toolbar>
+        </ion-footer>
+
     </div>
 </template>
 <script>

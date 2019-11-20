@@ -9,7 +9,6 @@
     </ion-header>
 
     <ion-content>
-      <Tabs />
       <ion-grid>
         <ion-list>
             <ion-item>
@@ -43,6 +42,13 @@
       </ion-card>
 
     </ion-content>
+
+    <ion-footer>
+        <ion-toolbar>
+            <Tabs />
+        </ion-toolbar>
+    </ion-footer>
+
   </div>
 </div>
 </template>

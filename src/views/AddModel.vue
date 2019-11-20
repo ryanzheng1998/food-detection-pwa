@@ -7,8 +7,6 @@
         </ion-header>
 
         <ion-content class="ion-padding">
-            <Tabs />
-
             <ion-card>
                 <ion-card-header>
                     <ion-card-subtitle>YOLO v2 tiny</ion-card-subtitle>
@@ -43,6 +41,13 @@
                 </ion-card-content>
             </ion-card>
         </ion-content>
+
+        <ion-footer>
+            <ion-toolbar>
+                <Tabs />
+            </ion-toolbar>
+        </ion-footer>
+
     </div>
 </template>
 

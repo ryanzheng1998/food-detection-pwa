@@ -8,7 +8,6 @@
         </ion-header>
 
         <ion-content class="ion-padding">
-            <Tabs />
             <ion-list>
                 <ion-item>
                     <ion-label>Language</ion-label>
@@ -20,6 +19,13 @@
                 </ion-item>
             </ion-list>
         </ion-content>
+
+        <ion-footer>
+            <ion-toolbar>
+                <Tabs />
+            </ion-toolbar>
+        </ion-footer>
+
     </div>
 </template>
 <script>
