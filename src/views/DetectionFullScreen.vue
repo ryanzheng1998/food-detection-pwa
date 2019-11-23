@@ -3,7 +3,7 @@
         <ion-content>
             <ion-item text-center><ion-label>《------請將鏡頭對準要偵測的物體2------》</ion-label></ion-item>
 
-            <div id="webcam-wrapper">
+            <div id="webcam-wrapper" ref="webcamWrapper">
                 <div id="loader"></div>
                 <div id="spinner">
                     <div class="rect1"></div>
@@ -12,11 +12,11 @@
                     <div class="rect4"></div>
                     <div class="rect5"></div>
                 </div>
-                <div id="rects"></div>
-                <video autoplay playsinline muted id="webcam"></video>
+                <div id="rects" ref="rects"></div>
+                <video autoplay playsinline muted id="webcam" ref="webcam"></video>
             </div>
 
-            <p id="fps"></p>
+            <p id="fps" ref="fps"></p>
         </ion-content>
 
         <ion-footer>
@@ -44,15 +44,14 @@ export default {
   },
   methods: {
     async setupWebCam () {
-      const webcam = document.getElementById('webcam')
       console.log('Setting up the webcam')
       if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
         const stream = await navigator.mediaDevices.getUserMedia({
           'audio': false,
-          'video': { facingMode: 'enviroment' }
+          'video': { facingMode: 'environment' }
         })
         window.stream = stream
-        webcam.srcObject = stream
+        this.$refs.webcam.srcObject = stream
       }
       console.log('Webcam setup complete')
     },
@@ -100,9 +99,8 @@ export default {
       setTimeout(this.run, interval * 100)
     },
     async predict (threshold) {
-      const webcam = document.getElementById('webcam')
       const start = performance.now()
-      const boxes = await this.myYolo.predict(webcam, { scoreThreshold: threshold })
+      const boxes = await this.myYolo.predict(this.$refs.webcam, { scoreThreshold: threshold })
       const end = performance.now()
 
       // fix this
@@ -114,25 +112,18 @@ export default {
     drawBoxes (boxes) {
       console.log(boxes)
 
-      // fix this
-      const rects = document.getElementById('rects')
-      const webcam = document.getElementById('webcam')
-      const wrapper = document.getElementById('webcam-wrapper')
-      rects.innerHTML = ''
+      this.$refs.rects.innerHTML = ''
 
-      const cw = webcam.clientWidth
-      const ch = webcam.clientHeight
-      const vw = webcam.videoWidth
-      const vh = webcam.videoHeight
+      const cw = this.$refs.webcam.clientWidth
+      const ch = this.$refs.webcam.clientHeight
+      const vw = this.$refs.webcam.videoWidth
+      const vh = this.$refs.webcam.videoHeight
 
       const scaleW = cw / vw
       const scaleH = ch / vh
 
-      console.log(webcam.clientWidth)
-      console.log(webcam.videoWidth)
-
-      wrapper.style.width = `${cw}px`
-      wrapper.style.height = `${ch}px`
+      this.$refs.webcamWrapper.style.width = `${cw}px`
+      this.$refs.webcamWrapper.style.height = `${ch}px`
 
       boxes.map((box) => {
         const rect = document.createElement('div')
@@ -153,16 +144,14 @@ export default {
         text.style.color = 'red'
 
         rect.appendChild(text)
-        rects.appendChild(rect)
+        this.$refs.rects.appendChild(rect)
       })
     }
   },
-  mounted: function () {
-    window.addEventListener('load', async () => {
-      await this.setupWebCam()
-      await this.loadModel(this.detectionModel + ' ' + this.language)
-      this.run()
-    })
+  mounted: async function () {
+    await this.setupWebCam()
+    await this.loadModel(this.detectionModel + ' ' + this.language)
+    this.run()
   }
 }
 </script>
