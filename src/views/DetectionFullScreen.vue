@@ -1,22 +1,13 @@
 <template>
     <div class="ion-page">
         <ion-content>
-            <ion-item text-center><ion-label>《------請將鏡頭對準要偵測的物體2------》</ion-label></ion-item>
+            <ion-item text-center><ion-label><p ref="loader"></p></ion-label></ion-item>
 
             <div id="webcam-wrapper" ref="webcamWrapper">
-                <div id="loader"></div>
-                <div id="spinner">
-                    <div class="rect1"></div>
-                    <div class="rect2"></div>
-                    <div class="rect3"></div>
-                    <div class="rect4"></div>
-                    <div class="rect5"></div>
-                </div>
                 <div id="rects" ref="rects"></div>
                 <video autoplay playsinline muted id="webcam" ref="webcam"></video>
             </div>
-
-            <p id="fps" ref="fps"></p>
+            <ion-item text-right><ion-label><p ref="fps"></p></ion-label></ion-item>
         </ion-content>
 
         <ion-footer>
@@ -56,33 +47,45 @@ export default {
       console.log('Webcam setup complete')
     },
     async loadModel (modelName) {
+      if (this.myYolo.dispose) {
+        this.myYolo.dispose()
+      }
       console.log(`Loading detection model: ${modelName}`)
       switch (modelName) {
         case 'UEC100 english':
+          this.progress(11)
           this.myYolo = await yolo.uec100_tiny_v2()
           break
         case 'UEC100 chinese':
+          this.progress(11)
           this.myYolo = await yolo.uec100_tiny_v2_chinese()
           break
         case 'UEC100 japanese':
+          this.progress(11)
           this.myYolo = await yolo.uec100_tiny_v2_japanese()
           break
         case 'coco english':
+          this.progress(11)
           this.myYolo = await yolo.coco_tiny_v2()
           break
         case 'coco chinese':
+          this.progress(11)
           this.myYolo = await yolo.coco_tiny_v2_chinese()
           break
         case 'coco japanese':
+          this.progress(11)
           this.myYolo = await yolo.coco_tiny_v2_japanese()
           break
         case 'voc english':
+          this.progress(16)
           this.myYolo = await yolo.voc_tiny_v1()
           break
         case 'voc chinese':
+          this.progress(16)
           this.myYolo = await yolo.voc_tiny_v1_chinese()
           break
         case 'voc japanese':
+          this.progress(16)
           this.myYolo = await yolo.voc_tiny_v1_japanese()
           break
         default:
@@ -103,9 +106,7 @@ export default {
       const boxes = await this.myYolo.predict(this.$refs.webcam, { scoreThreshold: threshold })
       const end = performance.now()
 
-      // fix this
-      const fps = document.getElementById('fps')
-      fps.innerHTML = `fps: ${(1000 / (end - start)).toFixed(2)} f/s`
+      this.$refs.fps.innerHTML = `fps: ${(1000 / (end - start)).toFixed(2)} f/s`
 
       this.drawBoxes(boxes)
     },
@@ -146,6 +147,26 @@ export default {
         rect.appendChild(text)
         this.$refs.rects.appendChild(rect)
       })
+    },
+    progress (totalModel) {
+      const loader = this.$refs.loader
+      let cnt = 0
+      Promise.all = (all => {
+        return function then (reqs) {
+          console.log(reqs.length)
+          if (reqs.length === totalModel && cnt < totalModel * 2) {
+            reqs.map(req => {
+              return req.then(r => {
+                loader.innerHTML = `正在載入模型   ${(++cnt / totalModel * 50).toFixed(1)}`
+                if (cnt === totalModel * 2) {
+                  loader.innerHTML = '《------請將鏡頭對準要偵測的物體2------》'
+                }
+              })
+            })
+          }
+          return all.apply(this, arguments)
+        }
+      })(Promise.all)
     }
   },
   mounted: async function () {
